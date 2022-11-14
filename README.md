@@ -28,3 +28,11 @@
 └── notebooks
 ```
 ### Members
+
+### Auto Format
+먼저 pip를 통해 관련 라이브러리를 설치합니다.
+```pip install black```
+```pip install isort```
+이후 터미널에서 다음 명령어를 통해 파일을 formatting할수 있습니다.
+
+```sh format.sh```
