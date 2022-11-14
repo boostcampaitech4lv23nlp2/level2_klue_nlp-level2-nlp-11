@@ -9,6 +9,8 @@ from klue.dataloader import RE_Dataset, tokenized_dataset, load_data, preprocess
 from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassification, Trainer, TrainingArguments, RobertaConfig, RobertaTokenizer, RobertaForSequenceClassification, BertTokenizer
 
 def train():
+  device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+  
   # load model and tokenizer
   # TODO: BETTER WAY TO SET DIRECTORIES!!!!
   MODEL_NAME = f"{args.model_name.replace('/','_')}_{args.version}"
@@ -16,8 +18,6 @@ def train():
   LOG_DIR = f"{args.logs_dir}/{MODEL_NAME}"
   MODEL_DIR = f"{args.model_dir}/{MODEL_NAME}"
   
-  set_seed(args.seed)
-  device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
   tokenizer = AutoTokenizer.from_pretrained(args.model_name)
 
   # load dataset
@@ -65,6 +65,8 @@ def train():
                                 # `steps`: Evaluate every `eval_steps`.
                                 # `epoch`: Evaluate every end of epoch.
     eval_steps = 500,            # evaluation step.
+    seed=args.seed,
+    fp16=True
     # TODO: evaluation_strategy 에 맞춰 변경이 필요함.
     # load_best_model_at_end = True
   )
@@ -80,6 +82,7 @@ def train():
   trainer.train()
   model.save_pretrained(MODEL_DIR)
 def main():
+  set_seed(args.seed)
   train()
 
 if __name__ == '__main__':
