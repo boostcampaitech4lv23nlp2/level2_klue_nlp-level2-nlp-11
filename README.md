@@ -11,7 +11,7 @@
 ```
 ├── code
 │   ├── klue
-│   │   ├── dataloder.py
+│   │   ├── dataloader.py
 │   │   ├── metric.py
 │   │   └── utils.py
 │   ├── args.py
