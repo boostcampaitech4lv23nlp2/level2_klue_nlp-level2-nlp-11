@@ -1,17 +1,17 @@
 path: 
   #data path
-  train_path: /opt/ml/dataset/train/new_train.csv
-  valid_path: /opt/ml/dataset/train/new_valid.csv 
-  test_path: /opt/ml/dataset/test/test_data.csv 
-  predict_path: /opt/ml/dataset/results/submission.csv
+  train_path: ../dataset/train/new_train.csv
+  valid_path: ../dataset/train/new_valid.csv 
+  test_path: ../dataset/test/test_data.csv 
+  predict_path: ../dataset/results/submission.csv
 
   #save path
-  model_dir : /opt/ml/dataset/best_model # 모델 저장 경로
-  save_dir : /opt/ml/dataset/results # train 스텝별 저장경로
-  logs_dir : /opt/ml/code/logs # 로그 저장 경로
+  model_dir : ../dataset/best_model # 모델 저장 경로
+  save_dir : ../dataset/results # train 스텝별 저장경로
+  logs_dir : ../dataset/logs # 로그 저장 경로
 
   #infernce path
-  load_model : /opt/ml/dataset/best_model/klue_roberta-small_ # inference 할때 불러올 모델 경로(dir)
+  load_model : ../dataset/best_model/klue_roberta-small_1 # inference 할때 불러올 모델 경로(dir)
 
 data:
   shuffle: True
