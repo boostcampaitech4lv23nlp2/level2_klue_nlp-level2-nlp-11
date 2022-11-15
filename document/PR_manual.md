@@ -50,3 +50,22 @@ git push -u origin main
 - merge된 상태 - 코드리뷰가 완료된 상태
 
 8. 실수로 잘못 머지/커밋했을 경우 **Revert기능**을 이용합니다. (하단 참고)
+
+### PR 양식
+
+주 변경사항 요약 정리
+
+Description
+변경 세부 사항 나열
+
+Changes I made
+변경된 파일 이름 적기
+
+To reviewers
+팀원들이 알아야 할 변경사항, 혹은 본 main 을 pull 했을 경우 변경해야할 사항
+
+Checklist
+[✔] Base branch와 compare branch를 올바르게 선택했습니다.
+[✔] PR 내용에 알맞은 label을 선택했습니다.
+[✔] 팀이 공유하는 requirements와 일치하는 환경에서 작업했습니다.
+[✔] 팀이 공유하는 convention에 따라 파일/문서를 추가/수정했습니다.
