@@ -51,7 +51,7 @@ git push -u origin main
 
 8. 실수로 잘못 머지/커밋했을 경우 **Revert기능**을 이용합니다. (하단 참고)
 
-### PR 양식
+## PR 양식
 
 주 변경사항 요약 정리, 한 두줄로
 
@@ -69,7 +69,7 @@ git push -u origin main
 
 ### **Checklist**
 
-[✔] Base branch와 compare branch를 올바르게 선택했습니다.
-[✔] PR 내용에 알맞은 label을 선택했습니다.
-[✔] 팀이 공유하는 requirements와 일치하는 환경에서 작업했습니다.
+[✔] Base branch와 compare branch를 올바르게 선택했습니다.  
+[✔] PR 내용에 알맞은 label을 선택했습니다.  
+[✔] 팀이 공유하는 requirements와 일치하는 환경에서 작업했습니다.  
 [✔] 팀이 공유하는 convention에 따라 파일/문서를 추가/수정했습니다.
