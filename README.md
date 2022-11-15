@@ -25,7 +25,9 @@
 │   ├── logs
 │   ├── prediction
 │   └── results
-└── notebooks
+├── notebooks
+└── document
+    └── PR_manual.md
 ```
 ### Members
 
