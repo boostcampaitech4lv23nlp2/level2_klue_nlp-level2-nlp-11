@@ -90,9 +90,9 @@ def main(args, conf):
             "probs": output_prob,
         }
     )
-    
+
     output.to_csv(
-        "./submission.csv",
+        "../dataset/prediction/submission.csv",
         index=False
         # "./prediction/submission.csv", index=False
     )  # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
