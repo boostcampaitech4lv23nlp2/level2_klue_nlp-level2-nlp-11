@@ -17,7 +17,7 @@ def train():
 
     # load model and tokenizer
     # TODO: BETTER WAY TO SET DIRECTORIES!!!!
-    MODEL_NAME = f"{conf.model.model_name.replace('/','_')}_{conf.maintenance}"
+    MODEL_NAME = f"{conf.model.model_name.replace('/','_')}_{conf.maintenance.version}"
     SAVE_DIR = f"{conf.path.save_dir}/{MODEL_NAME}"
     LOG_DIR = f"{conf.path.logs_dir}/{MODEL_NAME}"
     MODEL_DIR = f"{conf.path.model_dir}/{MODEL_NAME}"
@@ -26,10 +26,10 @@ def train():
 
     # load dataset
     train_dataset = load_data(conf.path.train_path)
-    dev_dataset = load_data(conf.path.valid_path) # validation용 데이터는 따로 만드셔야 합니다.
-
+    dev_dataset = load_data(conf.path.valid_path)
+    
     train_label = label_to_num(train_dataset["label"].values)
-    dev_label = label_to_num(dev_dataset['label'].values)
+    dev_label = label_to_num(dev_dataset["label"].values)
 
     # tokenizing dataset
     tokenized_train = tokenized_dataset(train_dataset, tokenizer)
@@ -48,6 +48,7 @@ def train():
     model = AutoModelForSequenceClassification.from_pretrained(
         conf.model.model_name, config=model_config
     )
+
     print(model.config)
     model.parameters
     model.to(device)
