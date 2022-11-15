@@ -1,0 +1,44 @@
+#path
+path:
+  train_path: ../../dataset/train/new_train.csv
+  valid_path: ../../dataset/train/new_valid.csv
+  test_path: ../../dataset/test/test_data.csv
+  predict_path: ../../dataset/results/submission.csv
+  data_dir : ../../data
+  model_dir : ../../dataset/best_model
+  save_dir : ../../dataset/results
+  logs_dir : ../../dataset/logs
+
+data:
+  shuffle: True
+
+model:
+  model_name: klue/roberta-small
+
+train:
+  max_epoch: 1
+  batch_size: 32
+  learning_rate: 1e-5
+  #loss: mse
+  #use_frozen: False #Frozen 유무
+  
+
+maintenance :
+  eval_strategy : epoch
+  version : 
+  save_model : True
+  wandb : True
+
+utils:
+  seed: 42
+  #monitor: val_loss # Early Stop monitor
+  #patience: 25 # patience 범위
+  #top_k: 3 # best save 
+
+k_fold: # fold
+  use_k_fold: False
+  num_folds: 5 # fold 개수
+  num_split: 5 # fold split ratio 5 => train(4) : val(1) 
+  
+wandb:
+  project: nlp-11-re
