@@ -65,7 +65,7 @@ To reviewers
 팀원들이 알아야 할 변경사항, 혹은 본 main 을 pull 했을 경우 변경해야할 사항
 
 Checklist
-[✔] Base branch와 compare branch를 올바르게 선택했습니다.
-[✔] PR 내용에 알맞은 label을 선택했습니다.
-[✔] 팀이 공유하는 requirements와 일치하는 환경에서 작업했습니다.
+[✔] Base branch와 compare branch를 올바르게 선택했습니다./n
+[✔] PR 내용에 알맞은 label을 선택했습니다./n
+[✔] 팀이 공유하는 requirements와 일치하는 환경에서 작업했습니다./n
 [✔] 팀이 공유하는 convention에 따라 파일/문서를 추가/수정했습니다.
