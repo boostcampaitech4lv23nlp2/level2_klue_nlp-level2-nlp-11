@@ -8,7 +8,9 @@
 │   ├── logs
 │   ├── prediction
 │   └── results
-└── dataset
-    ├── test
-    └── train
+├── dataset
+│   ├── test
+│   └── train
+└── document
+    └── PR_manual.md
 ```
