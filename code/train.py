@@ -37,7 +37,7 @@ def train():
 
     # make dataset for pytorch.
     train_dataset = RE_Dataset(tokenized_train, train_label)
-    RE_dev_dataset = RE_Dataset(tokenized_dev, dev_label)
+    dev_dataset = RE_Dataset(tokenized_dev, dev_label)
 
     print(device)
 
@@ -92,5 +92,4 @@ def train():
 if __name__ == "__main__":
     args, conf = get_args(mode="train")
     set_seed(conf.utils.seed)
-    print('test')
     train()
