@@ -1,9 +1,9 @@
 import argparse
 import sys
-import train
-import inference
 from typing import Tuple
 
+import inference
+import train
 from omegaconf import OmegaConf, dictconfig
 
 if __name__ == "__main__":
