@@ -6,6 +6,8 @@ import pandas as pd
 import torch
 from transformers import AutoTokenizer
 
+from . import utils
+
 
 class RE_Dataset(torch.utils.data.Dataset):
     """Dataset 구성을 위한 class."""
@@ -48,7 +50,7 @@ def preprocessing_dataset(dataset: pd.DataFrame) -> pd.DataFrame:
 
 
 def load_data(dataset_dir: str) -> pd.DataFrame:
-    """csv 파일을 경로에 맡게 불러 옵니다."""
+    """csv 파일을 경로에 맞게 불러 옵니다."""
     pd_dataset = pd.read_csv(dataset_dir)
     dataset = preprocessing_dataset(pd_dataset)
 
@@ -72,3 +74,22 @@ def tokenized_dataset(dataset: pd.DataFrame, tokenizer: AutoTokenizer) -> torch.
         add_special_tokens=True,
     )
     return tokenized_sentences
+
+
+def get_dataset(data_path: str, tokenizer: AutoTokenizer) -> RE_Dataset:
+    """데이터셋을 Trainer에 넣을 수 있도록 처리하여 리턴합니다.
+
+    Args:
+        data_path (str): 가져올 데이터의 주소입니다.
+        tokenizer (AutoTokenizer): 데이터를 토큰화할 토크나이저입니다.
+
+    Returns:
+        pd.DataFrame: _description_
+    """
+    dataset = load_data(data_path)
+    dataset_label = utils.label_to_num(dataset["label"].values)
+    # tokenizing dataset
+    dataset_tokens = tokenized_dataset(dataset, tokenizer)
+    # make dataset for pytorch.
+    dataset = RE_Dataset(dataset_tokens, dataset_label)
+    return dataset
