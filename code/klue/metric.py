@@ -4,6 +4,7 @@ from sklearn.metrics import (accuracy_score, f1_score, precision_score,
                              recall_score)
 
 
+# TODO : ADD TYPE HINT!
 def klue_re_micro_f1(preds, labels):
     """KLUE-RE micro f1 (except no_relation)"""
     label_list = [
