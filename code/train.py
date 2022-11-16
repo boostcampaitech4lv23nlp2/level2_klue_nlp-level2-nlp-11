@@ -1,7 +1,6 @@
 import pickle as pickle
 
 import torch
-from args import get_args
 from klue.dataloader import get_dataset
 from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
 from klue.utils import label_to_num, set_seed
@@ -11,7 +10,8 @@ from transformers import (AutoConfig, AutoModelForSequenceClassification,
                           Trainer, TrainingArguments)
 
 
-def train() -> None:
+def train(conf) -> None:
+    set_seed(conf.utils.seed)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # load model and tokenizer
@@ -76,8 +76,7 @@ def train() -> None:
     trainer.train()
     model.save_pretrained(MODEL_DIR)
 
-
-if __name__ == "__main__":
-    args, conf = get_args(mode="train")
-    set_seed(conf.utils.seed)
-    train()
+def k_train() -> None :
+    '''
+    구현예정
+    '''
