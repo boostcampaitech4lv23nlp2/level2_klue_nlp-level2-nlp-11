@@ -25,7 +25,6 @@ if __name__ == '__main__' :
     # pip install omegaconf 부터
     conf = OmegaConf.load(f"../config/{args.config}.yaml")
 
-
     if args.mode == "train" or args.mode == "t":
         #conf.k_fold 변수 확인
         if conf.k_fold.use_k_fold:

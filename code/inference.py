@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn.functional as F
-
 from klue.dataloader import RE_Dataset, load_data, tokenized_dataset
 from klue.utils import num_to_label, set_seed
 from torch.utils.data import DataLoader
@@ -14,14 +13,12 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 
 # TODO : ADD TYPE HINT!
-def inference(model, tokenized_sent, batch_size ,device):
+def inference(model, tokenized_sent, batch_size, device):
     """
     test dataset을 DataLoader로 만들어 준 후,
     batch_size로 나눠 model이 예측 합니다.
     """
-    dataloader = DataLoader(
-        tokenized_sent, batch_size, shuffle=False
-    )
+    dataloader = DataLoader(tokenized_sent, batch_size, shuffle=False)
     model.eval()
 
     output_pred = []
@@ -65,7 +62,6 @@ def main(conf):
     # TODO: load dataset 통합
     test_dataset = load_data(conf.path.test_path)
     test_label = list(map(int, test_dataset["label"].values))
-
 
     # -- tokenized_dataset is return token_dict(input_ids, token_type_ids, attention_mask) --
     # test_id, test_dataset, test_label = tokenized_dataset(test_dataset, tokenizer)

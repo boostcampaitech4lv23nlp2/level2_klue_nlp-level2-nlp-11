@@ -76,7 +76,8 @@ def train(conf) -> None:
     trainer.train()
     model.save_pretrained(MODEL_DIR)
 
-def k_train() -> None :
-    '''
+
+def k_train() -> None:
+    """
     구현예정
-    '''
+    """
