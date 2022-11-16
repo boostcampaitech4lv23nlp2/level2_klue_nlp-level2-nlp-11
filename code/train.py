@@ -1,9 +1,7 @@
 import pickle as pickle
 
 import torch
-from args import get_args
-from klue.dataloader import (RE_Dataset, load_data, preprocessing_dataset,
-                             tokenized_dataset)
+from klue.dataloader import get_dataset
 from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
 from klue.utils import label_to_num, set_seed
 from transformers import (AutoConfig, AutoModelForSequenceClassification,
@@ -12,7 +10,8 @@ from transformers import (AutoConfig, AutoModelForSequenceClassification,
                           Trainer, TrainingArguments)
 
 
-def train() -> None:
+def train(conf) -> None:
+    set_seed(conf.utils.seed)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # load model and tokenizer
@@ -25,20 +24,8 @@ def train() -> None:
     tokenizer = AutoTokenizer.from_pretrained(conf.model.model_name)
 
     # load dataset
-    train_dataset = load_data(conf.path.train_path)
-    dev_dataset = load_data(conf.path.valid_path)
-
-    train_label = label_to_num(train_dataset["label"].values)
-    dev_label = label_to_num(dev_dataset["label"].values)
-
-    # tokenizing dataset
-    tokenized_train = tokenized_dataset(train_dataset, tokenizer)
-    tokenized_dev = tokenized_dataset(dev_dataset, tokenizer)
-
-    # make dataset for pytorch.
-    train_dataset = RE_Dataset(tokenized_train, train_label)
-    dev_dataset = RE_Dataset(tokenized_dev, dev_label)
-
+    train_dataset = get_dataset(conf.path.train_path, tokenizer)
+    valid_dataset = get_dataset(conf.path.valid_path, tokenizer)
     print(device)
 
     # setting model hyperparameter
@@ -81,7 +68,7 @@ def train() -> None:
         model=model,  # the instantiated 🤗 Transformers model to be trained
         args=training_args,  # training arguments, defined above
         train_dataset=train_dataset,  # training dataset
-        eval_dataset=dev_dataset,  # evaluation dataset
+        eval_dataset=valid_dataset,  # evaluation dataset
         compute_metrics=compute_metrics,  # define metrics function
     )
 
@@ -90,7 +77,7 @@ def train() -> None:
     model.save_pretrained(MODEL_DIR)
 
 
-if __name__ == "__main__":
-    args, conf = get_args(mode="train")
-    set_seed(conf.utils.seed)
-    train()
+def k_train() -> None:
+    """
+    구현예정
+    """
