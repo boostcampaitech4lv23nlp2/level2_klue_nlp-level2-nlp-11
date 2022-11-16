@@ -12,7 +12,7 @@ from transformers import (AutoConfig, AutoModelForSequenceClassification,
                           Trainer, TrainingArguments)
 
 
-def train():
+def train() -> None:
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # load model and tokenizer
@@ -27,7 +27,7 @@ def train():
     # load dataset
     train_dataset = load_data(conf.path.train_path)
     dev_dataset = load_data(conf.path.valid_path)
-    
+
     train_label = label_to_num(train_dataset["label"].values)
     dev_label = label_to_num(dev_dataset["label"].values)
 

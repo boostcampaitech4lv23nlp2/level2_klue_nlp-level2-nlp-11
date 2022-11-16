@@ -13,6 +13,7 @@ from tqdm import tqdm
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 
+# TODO : ADD TYPE HINT!
 def inference(model, tokenized_sent, device):
     """
     test dataset을 DataLoader로 만들어 준 후,

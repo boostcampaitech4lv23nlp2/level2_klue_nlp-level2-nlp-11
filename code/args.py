@@ -1,10 +1,11 @@
 import argparse
 import sys
+from typing import Tuple
 
 from omegaconf import OmegaConf
 
 
-def get_args(mode="train"):
+def get_args(mode="train") -> Tuple[argparse.Namespace, OmegaConf.Dictconfig]:
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--config", "-c", type=str, default="base_config")
