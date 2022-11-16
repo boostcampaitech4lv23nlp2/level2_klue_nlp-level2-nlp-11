@@ -1,29 +1,31 @@
 import os
 import pickle as pickle
 
+import numpy as np
 import pandas as pd
 import torch
+from transformers import AutoTokenizer
 
 
 class RE_Dataset(torch.utils.data.Dataset):
     """Dataset 구성을 위한 class."""
 
-    def __init__(self, pair_dataset, labels):
+    def __init__(self, pair_dataset: pd.DataFrame, labels: np.ndarray):
         self.pair_dataset = pair_dataset
         self.labels = labels
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int) -> torch.Tensor:
         item = {
             key: val[idx].clone().detach() for key, val in self.pair_dataset.items()
         }
         item["labels"] = torch.tensor(self.labels[idx])
         return item
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.labels)
 
 
-def preprocessing_dataset(dataset):
+def preprocessing_dataset(dataset: pd.DataFrame) -> pd.DataFrame:
     """처음 불러온 csv 파일을 원하는 형태의 DataFrame으로 변경 시켜줍니다."""
     subject_entity = []
     object_entity = []
@@ -45,7 +47,7 @@ def preprocessing_dataset(dataset):
     return out_dataset
 
 
-def load_data(dataset_dir):
+def load_data(dataset_dir: str) -> pd.DataFrame:
     """csv 파일을 경로에 맡게 불러 옵니다."""
     pd_dataset = pd.read_csv(dataset_dir)
     dataset = preprocessing_dataset(pd_dataset)
@@ -53,7 +55,7 @@ def load_data(dataset_dir):
     return dataset
 
 
-def tokenized_dataset(dataset, tokenizer):
+def tokenized_dataset(dataset: pd.DataFrame, tokenizer: AutoTokenizer) -> torch.Tensor:
     """tokenizer에 따라 sentence를 tokenizing 합니다."""
     concat_entity = []
     for e01, e02 in zip(dataset["subject_entity"], dataset["object_entity"]):

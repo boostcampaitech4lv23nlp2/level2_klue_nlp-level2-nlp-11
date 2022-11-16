@@ -16,8 +16,7 @@
 │   │   └── utils.py
 │   ├── args.py
 │   ├── inference.py
-│   ├── train.py
-│   └── requirements.txt
+│   └── train.py
 ├── dataset
 │   ├── test
 │   ├── train
@@ -26,8 +25,11 @@
 │   ├── prediction
 │   └── results
 ├── notebooks
-└── document
-    └── PR_manual.md
+│   └── EDA.ipynb
+├── document
+│   └── PR_manual.md
+├── requirement.txt
+└── format.sh
 ```
 ### Members
 
