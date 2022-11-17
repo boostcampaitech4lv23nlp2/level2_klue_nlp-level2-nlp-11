@@ -72,7 +72,7 @@ def main(conf):
 
     ## predict answer
     pred_answer, output_prob = inference(
-        model, test_dataset, conf.train.batch_size, device
+        model, test_dataset, conf.train.per_device_train_batch_size, device
     )  # model에서 class 추론
     pred_answer = num_to_label(pred_answer)  # 숫자로 된 class를 원래 문자열 라벨로 변환.
 
