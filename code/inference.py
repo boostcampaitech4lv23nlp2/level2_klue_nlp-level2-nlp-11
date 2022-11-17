@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn.functional as F
-from klue.dataloader import RE_Dataset, load_data, tokenized_dataset, get_test_dataset
+from klue.dataloader import get_test_dataset
 from klue.utils import num_to_label, set_seed
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -48,6 +48,7 @@ def main(conf, device):
     """
     주어진 dataset csv 파일과 같은 형태일 경우 inference 가능한 코드입니다.
     """
+    MODEL_NAME = f"{conf.model.model_name.replace('/','_')}_{conf.maintenance.version}"
     # load tokenizer
     tokenizer = AutoTokenizer.from_pretrained(conf.model.model_name)
 
@@ -79,7 +80,7 @@ def main(conf, device):
     )
 
     output.to_csv(
-        "../dataset/prediction/submission.csv",
+        f"{conf.path.predict_dir}/{MODEL_NAME}.csv",
         index=False
         # "./prediction/submission.csv", index=False
     )  # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
