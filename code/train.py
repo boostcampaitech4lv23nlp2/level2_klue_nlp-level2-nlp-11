@@ -13,15 +13,17 @@ from transformers import (AutoConfig, AutoModelForSequenceClassification,
 
 
 def train(conf, device) -> None:
-    # Initialize wandb
-    wandb.init(project="test-project", entity="we-fusion-klue")
-
     # load model and tokenizer
     # TODO: BETTER WAY TO SET DIRECTORIES!!!!
     MODEL_NAME = f"{conf.model.model_name.replace('/','_')}_{conf.maintenance.version}"
     SAVE_DIR = pathlib.Path(f"{conf.path.save_dir}/{MODEL_NAME}")
     LOG_DIR = pathlib.Path(f"{conf.path.logs_dir}/{MODEL_NAME}")
     MODEL_DIR = pathlib.Path(f"{conf.path.model_dir}/{MODEL_NAME}")
+    WANDB_DIR = pathlib.Path(f"{conf.path.wandb_dir}")
+    
+    # Initialize wandb
+    wandb.init(project="test-project", entity="we-fusion-klue", dir=WANDB_DIR)
+
 
     tokenizer = AutoTokenizer.from_pretrained(conf.model.model_name)
 
