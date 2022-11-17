@@ -5,14 +5,26 @@ import wandb
 from klue.dataloader import get_dataset
 from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
 from klue.utils import FocalLoss, label_to_num, set_seed
-from transformers import (AutoConfig, AutoModelForSequenceClassification,
-                          AutoTokenizer, BertTokenizer, RobertaConfig,
-                          RobertaForSequenceClassification, RobertaTokenizer,
-                          Trainer, TrainingArguments)
+from transformers import (
+    AutoConfig,
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+    BertTokenizer,
+    RobertaConfig,
+    RobertaForSequenceClassification,
+    RobertaTokenizer,
+    Trainer,
+    TrainingArguments,
+)
 
 
 def train(conf) -> None:
-    wandb.init(project="test-project", entity="we-fusion-klue")
+    display_name = f"lr-{conf.train.learning_rate}_{conf.wandb.annotation}"
+    wandb.init(
+        project=f"{conf.model.model_name.replace('/', '_')}",
+        entity="we-fusion-klue",
+        name=display_name,
+    )
     set_seed(conf.utils.seed)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
