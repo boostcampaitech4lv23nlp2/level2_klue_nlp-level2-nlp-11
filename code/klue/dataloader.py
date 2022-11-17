@@ -1,5 +1,6 @@
 import os
 import pickle as pickle
+import pathlib
 
 import numpy as np
 import pandas as pd
@@ -49,7 +50,7 @@ def preprocessing_dataset(dataset: pd.DataFrame) -> pd.DataFrame:
     return out_dataset
 
 
-def load_data(dataset_dir: str) -> pd.DataFrame:
+def load_data(dataset_dir: pathlib.Path) -> pd.DataFrame:
     """csv 파일을 경로에 맞게 불러 옵니다."""
     pd_dataset = pd.read_csv(dataset_dir)
     dataset = preprocessing_dataset(pd_dataset)
@@ -76,7 +77,7 @@ def tokenized_dataset(dataset: pd.DataFrame, tokenizer: AutoTokenizer) -> torch.
     return tokenized_sentences
 
 
-def get_dataset(data_path: str, tokenizer: AutoTokenizer) -> RE_Dataset:
+def get_dataset(data_path: pathlib.Path, tokenizer: AutoTokenizer) -> RE_Dataset:
     """데이터셋을 Trainer에 넣을 수 있도록 처리하여 리턴합니다.
 
     Args:
@@ -93,3 +94,21 @@ def get_dataset(data_path: str, tokenizer: AutoTokenizer) -> RE_Dataset:
     # make dataset for pytorch.
     dataset = RE_Dataset(dataset_tokens, dataset_label)
     return dataset
+
+def get_test_dataset(data_path: pathlib.Path, tokenizer: AutoTokenizer) -> RE_Dataset:
+    """데이터셋을 Trainer에 넣을 수 있도록 처리하여 리턴합니다.
+
+    Args:
+        data_path (str): 가져올 데이터의 주소입니다.
+        tokenizer (AutoTokenizer): 데이터를 토큰화할 토크나이저입니다.
+
+    Returns:
+        pd.DataFrame: _description_
+    """
+    dataset = load_data(data_path)
+    dataset_label = list(map(int, dataset["label"].values))
+    # tokenizing dataset
+    dataset_tokens = tokenized_dataset(dataset, tokenizer)
+    # make dataset for pytorch.
+    dataset = RE_Dataset(dataset_tokens, dataset_label)
+    return dataset['id'], dataset, dataset_label

@@ -2,6 +2,7 @@ import pickle as pickle
 
 import torch
 import wandb
+import pathlib
 from klue.dataloader import get_dataset
 from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
 from klue.utils import label_to_num, set_seed
@@ -11,17 +12,16 @@ from transformers import (AutoConfig, AutoModelForSequenceClassification,
                           Trainer, TrainingArguments)
 
 
-def train(conf) -> None:
+def train(conf, device) -> None:
+    # Initialize wandb
     wandb.init(project="test-project", entity="we-fusion-klue")
-    set_seed(conf.utils.seed)
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # load model and tokenizer
     # TODO: BETTER WAY TO SET DIRECTORIES!!!!
     MODEL_NAME = f"{conf.model.model_name.replace('/','_')}_{conf.maintenance.version}"
-    SAVE_DIR = f"{conf.path.save_dir}/{MODEL_NAME}"
-    LOG_DIR = f"{conf.path.logs_dir}/{MODEL_NAME}"
-    MODEL_DIR = f"{conf.path.model_dir}/{MODEL_NAME}"
+    SAVE_DIR = pathlib.Path(f"{conf.path.save_dir}/{MODEL_NAME}")
+    LOG_DIR = pathlib.Path(f"{conf.path.logs_dir}/{MODEL_NAME}")
+    MODEL_DIR = pathlib.Path(f"{conf.path.model_dir}/{MODEL_NAME}")
 
     tokenizer = AutoTokenizer.from_pretrained(conf.model.model_name)
 

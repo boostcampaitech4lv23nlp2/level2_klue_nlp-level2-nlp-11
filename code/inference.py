@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn.functional as F
-from klue.dataloader import RE_Dataset, load_data, tokenized_dataset
+from klue.dataloader import RE_Dataset, load_data, tokenized_dataset, get_test_dataset
 from klue.utils import num_to_label, set_seed
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -44,12 +44,10 @@ def inference(model, tokenized_sent, batch_size, device):
     )
 
 
-def main(conf):
+def main(conf, device):
     """
     주어진 dataset csv 파일과 같은 형태일 경우 inference 가능한 코드입니다.
     """
-    set_seed(conf.utils.seed)
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     # load tokenizer
     tokenizer = AutoTokenizer.from_pretrained(conf.model.model_name)
 
@@ -60,15 +58,7 @@ def main(conf):
     model.to(device)
 
     # TODO: load dataset 통합
-    test_dataset = load_data(conf.path.test_path)
-    test_label = list(map(int, test_dataset["label"].values))
-
-    # -- tokenized_dataset is return token_dict(input_ids, token_type_ids, attention_mask) --
-    # test_id, test_dataset, test_label = tokenized_dataset(test_dataset, tokenizer)
-
-    test_id = test_dataset["id"]
-    test_dataset = tokenized_dataset(test_dataset, tokenizer)
-    test_dataset = RE_Dataset(test_dataset, test_label)
+    test_id, test_dataset, test_label = get_test_dataset(conf.path.test_path, tokenizer)
 
     ## predict answer
     pred_answer, output_prob = inference(
