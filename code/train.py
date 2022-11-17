@@ -5,7 +5,7 @@ import wandb
 import pathlib
 from klue.dataloader import get_dataset
 from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
-from klue.utils import label_to_num, set_seed
+from klue.utils import FocalLoss, label_to_num, set_seed
 from transformers import (AutoConfig, AutoModelForSequenceClassification,
                           AutoTokenizer, BertTokenizer, RobertaConfig,
                           RobertaForSequenceClassification, RobertaTokenizer,
@@ -68,7 +68,27 @@ def train(conf, device) -> None:
         # train
         **conf.train,  # use dict unpacking.
     )
-    trainer = Trainer(
+    # TODO : trainer와 관련된 클래스 또는 함수를 "code/klue/trainer.py"로 옮겨주세요!
+    class FocallossTrainer(Trainer):
+        # gamma, alpha를 직접 설정할 수 있도록 코드를 개선하였습니다.
+        # 다만 alpha는 int값을 넣을시 gather와 관련하여 오류가 발생힙니다.
+        def __init__(self, gamma: int = 5, alpha: int = None, **kwargs):
+            super().__init__(**kwargs)
+            self.gamma = gamma
+            self.alpha = alpha  # alpha는 안쓰는것을 추천한다.쓰는 순간 오류가 발생하는 이슈가 있음.
+
+        def compute_loss(self, model, inputs, return_outputs=False):
+            labels = inputs.get("labels")
+            outputs = model(**inputs)
+            logits = outputs.get("logits")
+            # loss_fct = MSELoss()
+            # loss = loss_fct(logits.squeeze(), labels.squeeze())
+            loss = FocalLoss(gamma=self.gamma, alpha=self.alpha)(
+                logits.squeeze(), labels.squeeze()
+            )
+            return (loss, outputs) if return_outputs else loss
+
+    trainer = FocallossTrainer(
         model=model,  # the instantiated 🤗 Transformers model to be trained
         args=training_args,  # training arguments, defined above
         train_dataset=train_dataset,  # training dataset
