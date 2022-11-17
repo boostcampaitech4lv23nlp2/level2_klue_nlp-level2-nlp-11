@@ -23,6 +23,7 @@
 │   ├── best_model
 │   ├── logs
 │   ├── prediction
+│   ├── wandb
 │   └── results
 ├── notebooks
 │   └── EDA.ipynb
