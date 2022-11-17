@@ -4,7 +4,7 @@ import torch
 import wandb
 from klue.dataloader import get_dataset
 from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
-from klue.utils import label_to_num, set_seed
+from klue.utils import label_to_num, set_seed, FocalLoss
 from transformers import (AutoConfig, AutoModelForSequenceClassification,
                           AutoTokenizer, BertTokenizer, RobertaConfig,
                           RobertaForSequenceClassification, RobertaTokenizer,
@@ -68,13 +68,26 @@ def train(conf) -> None:
         # train
         **conf.train,  # use dict unpacking.
     )
-    trainer = Trainer(
+    
+    class FocallossTrainer(Trainer):
+        def compute_loss(self, model, inputs, return_outputs=False):
+            labels = inputs.get("labels")
+            outputs = model(**inputs)
+            logits = outputs.get('logits')
+            # loss_fct = MSELoss()
+            # loss = loss_fct(logits.squeeze(), labels.squeeze())
+            loss = FocalLoss(gamma=5)(logits.squeeze(),labels.squeeze())
+            return (loss, outputs) if return_outputs else loss
+        
+    trainer = FocallossTrainer(
         model=model,  # the instantiated 🤗 Transformers model to be trained
         args=training_args,  # training arguments, defined above
         train_dataset=train_dataset,  # training dataset
         eval_dataset=valid_dataset,  # evaluation dataset
         compute_metrics=compute_metrics,  # define metrics function
     )
+    
+    
 
     # train model
     trainer.train()
