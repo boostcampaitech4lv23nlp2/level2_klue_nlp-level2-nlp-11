@@ -46,4 +46,4 @@ k_fold: # fold
   num_split: 5 # fold split ratio 5 => train(4) : val(1) 
   
 wandb:
-  project: nlp-11-re
+  annotation: test_focalloss #이 실험에 대해 추가로 설명할 특징. ex) test_focalloss
