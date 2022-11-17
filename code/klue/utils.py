@@ -47,6 +47,7 @@ def num_to_label(label: np.ndarray) -> list:
 
 
 # https://github.com/clcarwin/focal_loss_pytorch/blob/e11e75bad9/focalloss_test.py
+# TODO : FocalLoss를 code/klue/loss.py로 옮겨주세요!
 class FocalLoss(torch.nn.Module):
     def __init__(self, gamma=0, alpha=None, size_average=True):
         super(FocalLoss, self).__init__()
@@ -64,17 +65,19 @@ class FocalLoss(torch.nn.Module):
             input = input.transpose(1, 2)  # N,C,H*W => N,H*W,C
             input = input.contiguous().view(-1, input.size(2))  # N,H*W,C => N*H*W,C
         target = target.view(-1, 1)
+        print(target.shape)
 
-        logpt = F.log_softmax(input)
-        logpt = logpt.gather(1, target)
+        logpt = F.log_softmax(input, dim=-1)
+        print(logpt.shape)
+        logpt = torch.gather(logpt, 1, target)
         logpt = logpt.view(-1)
         pt = Variable(logpt.data.exp())
 
-        if self.alpha is not None:
-            if self.alpha.type() != input.data.type():
-                self.alpha = self.alpha.type_as(input.data)
-            at = self.alpha.gather(0, target.data.view(-1))
-            logpt = logpt * Variable(at)
+        # if self.alpha is not None:
+        #     if self.alpha.type() != input.data.type():
+        #         self.alpha = self.alpha.type_as(input.data)
+        #     at = self.alpha.gather(0, target.data.view(-1))
+        #     logpt = logpt * Variable(at)
 
         loss = -1 * (1 - pt) ** self.gamma * logpt
         if self.size_average:
