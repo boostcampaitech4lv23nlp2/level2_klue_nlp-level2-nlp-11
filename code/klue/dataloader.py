@@ -1,6 +1,6 @@
 import os
-import pickle as pickle
 import pathlib
+import pickle as pickle
 
 import numpy as np
 import pandas as pd
@@ -95,6 +95,7 @@ def get_dataset(data_path: pathlib.Path, tokenizer: AutoTokenizer) -> RE_Dataset
     dataset = RE_Dataset(dataset_tokens, dataset_label)
     return dataset
 
+
 def get_test_dataset(data_path: pathlib.Path, tokenizer: AutoTokenizer) -> RE_Dataset:
     """데이터셋을 Trainer에 넣을 수 있도록 처리하여 리턴합니다.
 
@@ -107,8 +108,9 @@ def get_test_dataset(data_path: pathlib.Path, tokenizer: AutoTokenizer) -> RE_Da
     """
     dataset = load_data(data_path)
     dataset_label = list(map(int, dataset["label"].values))
+    dataset_id = dataset["id"]
     # tokenizing dataset
     dataset_tokens = tokenized_dataset(dataset, tokenizer)
     # make dataset for pytorch.
     dataset = RE_Dataset(dataset_tokens, dataset_label)
-    return dataset['id'], dataset, dataset_label
+    return dataset_id, dataset, dataset_label
