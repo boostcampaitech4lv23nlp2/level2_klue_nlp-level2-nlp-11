@@ -48,4 +48,5 @@ k_fold: # fold
   num_split: 5 # fold split ratio 5 => train(4) : val(1) 
   
 wandb:
-  project: nlp-11-re
+  exp_name: test_exp_name #실험의 이름. 이 변수의 값으로 프로젝트가 만들어집니다.
+  annotation: test_focalloss #이 실험에 대해 추가로 설명할 특징. display_name과 관련있습니다.ex) focal-gamma=2

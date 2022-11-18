@@ -6,6 +6,7 @@ import wandb
 from klue.dataloader import get_dataset
 from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
 from klue.trainer import FocallossTrainer
+from klue.utils import set_seed
 from transformers import (AutoConfig, AutoModelForSequenceClassification,
                           AutoTokenizer, BertTokenizer, EarlyStoppingCallback,
                           RobertaConfig, RobertaForSequenceClassification,
@@ -13,17 +14,25 @@ from transformers import (AutoConfig, AutoModelForSequenceClassification,
 
 
 def train(conf, device) -> None:
+    set_seed(conf.utils.seed)
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
     # load model and tokenizer
     # TODO: BETTER WAY TO SET DIRECTORIES!!!!
+    DISPLAY_NAME = f"lr-{conf.train.learning_rate:5f}_{conf.wandb.annotation}"
     MODEL_NAME = f"{conf.model.model_name.replace('/','_')}_{conf.maintenance.version}"
     SAVE_DIR = pathlib.Path(f"{conf.path.save_dir}/{MODEL_NAME}")
     LOG_DIR = pathlib.Path(f"{conf.path.logs_dir}/{MODEL_NAME}")
     MODEL_DIR = pathlib.Path(f"{conf.path.model_dir}/{MODEL_NAME}")
     WANDB_DIR = pathlib.Path(f"{conf.path.wandb_dir}")
-    
     # Initialize wandb
-    wandb.init(project="test-project", entity="we-fusion-klue", dir=WANDB_DIR)
-
+    wandb.init(
+        project=f"{conf.wandb.exp_name}",
+        entity="we-fusion-klue",
+        dir=WANDB_DIR,
+        name=f"{DISPLAY_NAME}",
+        group=f"{conf.model.model_name.replace('/','_')}",
+    )
 
     tokenizer = AutoTokenizer.from_pretrained(conf.model.model_name)
 
