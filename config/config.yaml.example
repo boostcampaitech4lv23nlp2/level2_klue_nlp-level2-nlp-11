@@ -3,14 +3,14 @@ path:
   train_path: ../dataset/train/new_train.csv
   valid_path: ../dataset/train/new_valid.csv 
   test_path: ../dataset/test/test_data.csv 
+  predict_path: ../dataset/results/submission.csv
 
   #save path
   model_dir : ../dataset/best_model # 모델 저장 경로
   save_dir : ../dataset/results # train 스텝별 저장경로
   logs_dir : ../dataset/logs # 로그 저장 경로
   # TODO: wandb needs absolute path or pathlib.Path
-  wandb_dir: ../dataset
-  predict_dir: ../dataset/prediction
+  # wandb_dir: ../dataset
 
   #infernce path
   load_model : ../dataset/best_model/klue_roberta-small_1 # inference 할때 불러올 모델 경로(dir)
@@ -48,4 +48,4 @@ k_fold: # fold
   num_split: 5 # fold split ratio 5 => train(4) : val(1) 
   
 wandb:
-  project: nlp-11-re
+  project: ...

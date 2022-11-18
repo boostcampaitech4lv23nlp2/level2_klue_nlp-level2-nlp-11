@@ -1,27 +1,29 @@
+import pathlib
 import pickle as pickle
 
 import torch
 import wandb
 from klue.dataloader import get_dataset
 from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
-from klue.utils import label_to_num, set_seed
+from klue.trainer import FocallossTrainer
 from transformers import (AutoConfig, AutoModelForSequenceClassification,
                           AutoTokenizer, BertTokenizer, RobertaConfig,
                           RobertaForSequenceClassification, RobertaTokenizer,
                           Trainer, TrainingArguments)
 
 
-def train(conf) -> None:
-    wandb.init(project="test-project", entity="we-fusion-klue")
-    set_seed(conf.utils.seed)
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
+def train(conf, device) -> None:
     # load model and tokenizer
     # TODO: BETTER WAY TO SET DIRECTORIES!!!!
     MODEL_NAME = f"{conf.model.model_name.replace('/','_')}_{conf.maintenance.version}"
-    SAVE_DIR = f"{conf.path.save_dir}/{MODEL_NAME}"
-    LOG_DIR = f"{conf.path.logs_dir}/{MODEL_NAME}"
-    MODEL_DIR = f"{conf.path.model_dir}/{MODEL_NAME}"
+    SAVE_DIR = pathlib.Path(f"{conf.path.save_dir}/{MODEL_NAME}")
+    LOG_DIR = pathlib.Path(f"{conf.path.logs_dir}/{MODEL_NAME}")
+    MODEL_DIR = pathlib.Path(f"{conf.path.model_dir}/{MODEL_NAME}")
+    WANDB_DIR = pathlib.Path(f"{conf.path.wandb_dir}")
+    
+    # Initialize wandb
+    wandb.init(project="test-project", entity="we-fusion-klue", dir=WANDB_DIR)
+
 
     tokenizer = AutoTokenizer.from_pretrained(conf.model.model_name)
 
@@ -68,7 +70,8 @@ def train(conf) -> None:
         # train
         **conf.train,  # use dict unpacking.
     )
-    trainer = Trainer(
+
+    trainer = FocallossTrainer(
         model=model,  # the instantiated 🤗 Transformers model to be trained
         args=training_args,  # training arguments, defined above
         train_dataset=train_dataset,  # training dataset

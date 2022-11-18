@@ -1,3 +1,6 @@
+# Config
+*.yaml
+
 ### Dataset
 dataset/
 code/lightning_logs
