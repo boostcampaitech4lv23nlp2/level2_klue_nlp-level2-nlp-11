@@ -7,9 +7,9 @@ from klue.dataloader import get_dataset
 from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
 from klue.trainer import FocallossTrainer
 from transformers import (AutoConfig, AutoModelForSequenceClassification,
-                          AutoTokenizer, BertTokenizer, RobertaConfig,
-                          RobertaForSequenceClassification, RobertaTokenizer,
-                          Trainer, TrainingArguments)
+                          AutoTokenizer, BertTokenizer, EarlyStoppingCallback,
+                          RobertaConfig, RobertaForSequenceClassification,
+                          RobertaTokenizer, Trainer, TrainingArguments)
 
 
 def train(conf, device) -> None:
@@ -69,6 +69,8 @@ def train(conf, device) -> None:
         report_to="wandb",
         # train
         **conf.train,  # use dict unpacking.
+        # early stopping
+        metric_for_best_model="eval_micro f1 score",
     )
 
     trainer = FocallossTrainer(
@@ -77,6 +79,7 @@ def train(conf, device) -> None:
         train_dataset=train_dataset,  # training dataset
         eval_dataset=valid_dataset,  # evaluation dataset
         compute_metrics=compute_metrics,  # define metrics function
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=2)],
     )
 
     # train model
