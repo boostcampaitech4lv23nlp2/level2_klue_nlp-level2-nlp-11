@@ -90,12 +90,13 @@ def train(conf, device) -> None:
     )
 
     trainer = FocallossTrainer(
+        gamma=conf.train.gamma,
         model=model,  # the instantiated 🤗 Transformers model to be trained
         args=training_args,  # training arguments, defined above
         train_dataset=train_dataset,  # training dataset
         eval_dataset=valid_dataset,  # evaluation dataset
         compute_metrics=compute_metrics,  # define metrics function
-        callbacks=[EarlyStoppingCallback(early_stopping_patience=2)],
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=5)],
     )
 
     # train model
