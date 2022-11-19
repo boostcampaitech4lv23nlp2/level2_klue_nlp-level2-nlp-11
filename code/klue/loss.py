@@ -4,7 +4,7 @@ from torch.autograd import Variable
 
 
 class FocalLoss(torch.nn.Module):
-    def __init__(self, gamma=0, alpha=None, size_average=True):
+    def __init__(self, gamma=2, alpha=None, size_average=True):
         super(FocalLoss, self).__init__()
         self.gamma = gamma
         self.alpha = alpha
