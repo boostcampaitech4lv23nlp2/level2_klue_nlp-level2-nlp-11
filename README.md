@@ -43,3 +43,10 @@ pip install isort
 이후 터미널에서 다음 명령어를 통해 파일을 formatting할수 있습니다.
 
 ```sh format.sh```
+
+### wandb experiment rule
+wandb실험을 효율적으로 하기 위한 룰입니다!
+1. base_config.wandb.exp_name 으로 본인의 실험 목적을 설정합니다.(ex: 기본 loss와 focalloss와의 차이를 비교하는 실험 -> Compare_loss)
+2. base_config.wandb.annotation 으로 세부실험의 주요 변경사항을 표시합니다.(ex:배치사이즈를 바꾸었다. -> change_batch)
+3. 실험 각각의 이름은 "lr-(learning_rate값)_(2. 에서 설정한 annotation)"의 형태로 설정되어 있습니다.
+4. 기본적으로 모델의 이름으로 그룹이 나뉘어져 있습니다.(모델별로 비교하기 용이하게 하기 위함.)
