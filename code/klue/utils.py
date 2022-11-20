@@ -49,14 +49,14 @@ def num_to_label(label: np.ndarray) -> list:
 def set_MODEL_NAME(model_name: str, save_dir_path: str) -> Path:
     """동일한 모델을 사용할 때, 버전을 일일이 입력해주어야 하는 문제를 해결하기 위한 함수입니다.
     만약 save_dir에 동일한 모델을 저장한 경우가 있을경우, 마지막 version에 1을 더한 path를 추가합니다.
-
+    주의: save_dir만 체크하기 때문에, results_dir에 같은 version이 존재하면 덮어써집니다.
 
     Args:
         model_name (str): 모델의 이름
-        save_dir_path (str): 저장 모델의 경우.
+        save_dir_path (str): best_model_path
 
     Returns:
-        Path: _description_
+        Path: 모델경로
     """
     # pre-processing
     model_name = model_name.replace("/", "_")
