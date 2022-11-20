@@ -1,4 +1,4 @@
-import pathlib
+from pathlib import Path
 import pickle as pickle
 
 import torch
@@ -6,11 +6,19 @@ import wandb
 from klue.dataloader import get_dataset
 from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
 from klue.trainer import FocallossTrainer
-from klue.utils import set_seed
-from transformers import (AutoConfig, AutoModelForSequenceClassification,
-                          AutoTokenizer, BertTokenizer, EarlyStoppingCallback,
-                          RobertaConfig, RobertaForSequenceClassification,
-                          RobertaTokenizer, Trainer, TrainingArguments)
+from klue.utils import set_seed, set_MODEL_NAME
+from transformers import (
+    AutoConfig,
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+    BertTokenizer,
+    EarlyStoppingCallback,
+    RobertaConfig,
+    RobertaForSequenceClassification,
+    RobertaTokenizer,
+    Trainer,
+    TrainingArguments,
+)
 
 
 def train(conf, device) -> None:
@@ -19,11 +27,11 @@ def train(conf, device) -> None:
     # load model and tokenizer
     # TODO: BETTER WAY TO SET DIRECTORIES!!!!
     DISPLAY_NAME = f"lr-{conf.train.learning_rate:5f}_{conf.wandb.annotation}"
-    MODEL_NAME = f"{conf.model.model_name.replace('/','_')}_{conf.maintenance.version}"
-    SAVE_DIR = pathlib.Path(f"{conf.path.save_dir}/{MODEL_NAME}")
-    LOG_DIR = pathlib.Path(f"{conf.path.logs_dir}/{MODEL_NAME}")
-    MODEL_DIR = pathlib.Path(f"{conf.path.model_dir}/{MODEL_NAME}")
-    WANDB_DIR = pathlib.Path(f"{conf.path.wandb_dir}")
+    MODEL_NAME = set_MODEL_NAME(conf.model.model_name, conf.path.save_dir)
+    SAVE_DIR = Path(conf.path.save_dir) / MODEL_NAME
+    LOG_DIR = Path(conf.path.logs_dir) / MODEL_NAME
+    MODEL_DIR = Path(conf.path.model_dir) / MODEL_NAME
+    WANDB_DIR = Path(conf.path.wandb_dir)
     # Initialize wandb
     wandb.init(
         project=f"{conf.wandb.exp_name}",
@@ -87,8 +95,8 @@ def train(conf, device) -> None:
         train_dataset=train_dataset,  # training dataset
         eval_dataset=valid_dataset,  # evaluation dataset
         compute_metrics=compute_metrics,  # define metrics function
-        callbacks=[EarlyStoppingCallback(early_stopping_patience=5)],
-        gamma=conf.focalloss.gamma,
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=5)],  # set patience
+        gamma=conf.focalloss.gamma,  # set focalloss gamma.
     )
 
     # train model
