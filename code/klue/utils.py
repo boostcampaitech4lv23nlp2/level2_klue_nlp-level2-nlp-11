@@ -2,13 +2,13 @@ import math
 import os
 import pickle as pickle
 import random
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from pathlib import Path
 
 
 def set_seed(random_seed: int) -> None:
@@ -69,7 +69,5 @@ def set_MODEL_NAME(model_name: str, save_dir_path: str) -> Path:
     return Path(model_name) / str(version)
 
 
-
 if __name__ == "__main__":
     print(set_MODEL_NAME("klue/roberta-small", "../dataset/results"))
-    
