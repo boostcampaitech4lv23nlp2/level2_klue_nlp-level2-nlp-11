@@ -20,10 +20,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", "-m", required=True)
     parser.add_argument("--config", "-c", type=str, default="base_config")
-    args, _ = parser.parse_known_args()
+    args, sweep_args = parser.parse_known_args()
 
     # pip install omegaconf 부터
     conf = OmegaConf.load(f"../config/{args.config}.yaml")
+    conf.merge_with_dotlist(sweep_args)
 
     set_seed(conf.utils.seed)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

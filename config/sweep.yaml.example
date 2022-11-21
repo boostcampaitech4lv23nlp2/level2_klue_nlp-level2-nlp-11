@@ -1,0 +1,28 @@
+project: test_sweep
+#W&B UI에 표시되는 스윕의 이름
+name: test
+#스윕에 대한 텍스트 설명 (참고용)
+description: test_sweep
+#실행할 훈련 스크립트 (필수)
+program: /opt/ml/Relation_Extraction/code/main.py
+#​검색전략 지정 (필수)
+method: grid
+#최적화할 메트릭 지정 (일부 검색 전략 및 중지 기준(stopping criteria)에 의해서 사용됨)
+metric: 
+  name: eval/micro f1 score
+  goal: maximize
+#​중지기준 지정 (선택 사항, 기본값으로 조기 중지 없음으로 설정됨)
+#early_terminate:
+#검색할 매개변수 경계 지정 (필수)
+parameters:
+  train.learning_rate: 
+    values:
+      [1e-5, 2e-5, 3e-5, 4e-5, 5e-5]
+#훈련 스크립트 실행 방법에 대한  지정
+command:
+  - ${env}
+  - ${interpreter}
+  - ${program}
+  - "-m"
+  - "t"
+  - ${args_no_hyphens}
