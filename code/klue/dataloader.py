@@ -89,6 +89,7 @@ def get_dataset(data_path: pathlib.Path, tokenizer: AutoTokenizer) -> RE_Dataset
     """
     dataset = load_data(data_path)
     dataset_label = utils.label_to_num(dataset["label"].values)
+
     # tokenizing dataset
     dataset_tokens = tokenized_dataset(dataset, tokenizer)
     # make dataset for pytorch.
@@ -114,3 +115,20 @@ def get_test_dataset(data_path: pathlib.Path, tokenizer: AutoTokenizer) -> RE_Da
     # make dataset for pytorch.
     dataset = RE_Dataset(dataset_tokens, dataset_label)
     return dataset_id, dataset, dataset_label
+
+def set_tokenizer(tokenizer: AutoTokenizer , add_token : list) :
+    """Tokenzier 재정의하고 , speical 토큰을 추가 합니다.
+
+    Args:
+        tokenizer (AutoTokenizer): 데이터를 토큰화할 토크나이저입니다.
+        add_token (list) : 추가될 토큰 리스트 입니다
+
+    Returns:
+        tokenizer: 새롭게 정의된 Tokenizer 입니다
+        new_vocab_size : speical 토큰이 추가된 vocab_size 입니다 => 모델 embedding size를 추가하기 위해 사용합니다!
+    """
+    new_token_count = tokenizer.add_tokens(add_token)  # 새롭게 추가된 토큰의 수 저장
+
+    new_vocab_size = tokenizer.vocab_size +  new_token_count
+
+    return tokenizer , new_vocab_size
