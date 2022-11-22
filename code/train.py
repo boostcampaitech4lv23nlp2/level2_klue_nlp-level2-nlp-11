@@ -3,8 +3,9 @@ from pathlib import Path
 
 import torch
 import wandb
-from klue.dataloader import get_dataset
+from klue.dataloader import load_dataloader, set_tokenizer
 from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
+from klue.Model import load_model
 from klue.trainer import FocallossTrainer
 from klue.utils import set_MODEL_NAME, set_seed
 from transformers import (AutoConfig, AutoModelForSequenceClassification,
@@ -33,23 +34,40 @@ def train(conf, device) -> None:
         group=f"{conf.model.model_name.replace('/','_')}",
     )
 
+    # set_tokenizerr
     tokenizer = AutoTokenizer.from_pretrained(conf.model.model_name)
+    tokenizer, new_vocab_size = set_tokenizer(tokenizer)
+
+    print(new_vocab_size)
+
+    assert conf.data.data_loader in [
+        "BaseDataLoader",
+        "CustomDataLoader",
+    ], "data.data_loader is not ['BaseDataLoader' , 'CustomDataLoader']!.  please check config.yaml"
 
     # load dataset
-    train_dataset = get_dataset(conf.path.train_path, tokenizer)
-    valid_dataset = get_dataset(conf.path.valid_path, tokenizer)
-    print(device)
+    train_dataset = load_dataloader(
+        conf.data.data_loader, conf.path.train_path, tokenizer
+    ).get_dataset()
+    valid_dataset = load_dataloader(
+        conf.data.data_loader, conf.path.valid_path, tokenizer
+    ).get_dataset()
 
-    # setting model hyperparameter
-    model_config = AutoConfig.from_pretrained(conf.model.model_name)
-    model_config.num_labels = 30
+    print("train_dataset :", len(train_dataset))
+    print("valid_dataset :", len(valid_dataset))
 
-    model = AutoModelForSequenceClassification.from_pretrained(
-        conf.model.model_name, config=model_config
-    )
+    assert conf.model.model_type in [
+        "BaseModel",
+        "CustomModel",
+    ], "model.model_type  is not ['BaseModel' , 'CustomModel']!.  please check config.yaml"
 
+    model = load_model(conf.model.model_type, conf.model.model_name, new_vocab_size)
+    model = model.get_model()
+
+    print(model)
     print(model.config)
     model.parameters
+
     model.to(device)
     # 사용한 option 외에도 다양한 option들이 있습니다.
     # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
@@ -81,19 +99,43 @@ def train(conf, device) -> None:
         metric_for_best_model="eval_micro f1 score",
     )
 
-    trainer = FocallossTrainer(
-        model=model,  # the instantiated 🤗 Transformers model to be trained
-        args=training_args,  # training arguments, defined above
-        train_dataset=train_dataset,  # training dataset
-        eval_dataset=valid_dataset,  # evaluation dataset
-        compute_metrics=compute_metrics,  # define metrics function
-        callbacks=[EarlyStoppingCallback(early_stopping_patience=5)],  # set patience
-        gamma=conf.focalloss.gamma,  # set focalloss gamma.
+    assert conf.model.trainer in [
+        "Base",
+        "Focalloss",
+    ], "model.trainer  is not ['Base' , 'Focalloss'] please check config.yaml"
+
+    print(
+        conf.data.data_loader, new_vocab_size, conf.model.model_type, conf.model.trainer
     )
+
+    if conf.model.trainer == "Base":
+        print("base_trainer")
+        trainer = Trainer(
+            model=model,  # the instantiated 🤗 Transformers model to be trained
+            args=training_args,  # training arguments, defined above
+            train_dataset=train_dataset,  # training dataset
+            eval_dataset=valid_dataset,  # evaluation dataset
+            compute_metrics=compute_metrics,  # define metrics function
+        )
+
+    elif conf.model.trainer == "Focalloss":
+        print("Focalloss_trainer")
+        trainer = FocallossTrainer(
+            model=model,  # the instantiated 🤗 Transformers model to be trained
+            args=training_args,  # training arguments, defined above
+            train_dataset=train_dataset,  # training dataset
+            eval_dataset=valid_dataset,  # evaluation dataset
+            compute_metrics=compute_metrics,  # define metrics function
+            callbacks=[
+                EarlyStoppingCallback(early_stopping_patience=5)
+            ],  # set patience
+            gamma=conf.focalloss.gamma,  # set focalloss gamma.
+        )
 
     # train model
     trainer.train()
     model.save_pretrained(MODEL_DIR)
+    print(f"save model path : {MODEL_DIR}")
 
 
 def k_train() -> None:

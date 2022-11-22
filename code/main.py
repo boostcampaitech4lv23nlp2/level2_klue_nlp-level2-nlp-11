@@ -5,8 +5,8 @@ from typing import Tuple
 import inference
 import torch
 import train
-from klue.utils import num_to_label, set_seed
-from omegaconf import OmegaConf, dictconfig
+from klue.utils import set_seed
+from omegaconf import OmegaConf
 
 if __name__ == "__main__":
     """
@@ -14,7 +14,6 @@ if __name__ == "__main__":
         --mode -m : 실행 모드를 지정
                     train : [train, t] 모델 학습
                     inference : [inference, i ] 모델 예측
-                    exp : [exp , e]  모델 실험(sweep) / 구현예정
         --config -c : config.yaml 의 file_name
     """
     parser = argparse.ArgumentParser()
