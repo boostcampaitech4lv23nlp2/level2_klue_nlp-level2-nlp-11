@@ -17,12 +17,13 @@ path:
   load_model : ../dataset/best_model/klue_roberta-small/1 # inference 할때 불러올 모델 경로(dir)
 
 data:
+  data_loader : BaseDataLoader  # data_loader 1) BaseDataLoader , 2) CustomDataLoader
   shuffle: True
 
 model:
   model_name: klue/roberta-small
   model_type : BaseModel  #model_type 1) BaseModel, 2) CustomModel
-  trainer : Focalloss  #trainer_type) Base,  Focalloss
+  trainer : Base  #trainer_type) Base,  Focalloss 
 
 train:
   num_train_epochs: 1
@@ -36,8 +37,6 @@ focalloss :
 maintenance :
   eval_strategy : epoch
   version : '1'
-  save_model : True
-  wandb : True
 
 utils:
   seed: 42
