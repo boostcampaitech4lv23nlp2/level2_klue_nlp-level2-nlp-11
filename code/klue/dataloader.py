@@ -176,17 +176,40 @@ class CustomDataLoader:
         re_sentence_list = []
 
         for idx , item in dataset[:].iterrows() :
-            temp_sentence, ssidx , seidx , osidx , oeidx  = item['sentence'] , item['sub_start_idx'] , item['sub_end_idx'] , item['obj_start_idx'] , item['obj_end_idx']
-            if item['sub_start_idx'] < item['obj_start_idx'] : 
-                if item['sub_start_idx'] == 0 :
-                    temp = ''.join([temp_sentence[ssidx:seidx+1].replace(item['sub_word'],f"@*{item['sub_type']}*{item['sub_word']}@") , temp_sentence[seidx+1:osidx]  , temp_sentence[osidx:oeidx+1].replace(item['obj_word'],f"#∧{item['obj_type']}∧{item['obj_word']}#") , temp_sentence[oeidx+1:] ])
+            temp_sentence, sub_word, ssidx , seidx,  sub_type  = item['sentence'] , item['sub_word'] ,item['sub_start_idx'] , item['sub_end_idx'] , item['sub_type']
+            obj_word ,osidx , oeidx , obj_type =  item['obj_word'] , item['obj_start_idx'] , item['obj_end_idx'] , item['obj_type']
+
+            re_sub_word = f"@*{sub_type}*{sub_word}@"
+            re_obj_word = f"#∧{obj_type}∧{obj_word}#"
+
+            if ssidx < osidx : 
+                if ssidx == 0 :
+                    temp = ''.join([
+                        temp_sentence[ssidx:seidx+1].replace(sub_word,re_sub_word), 
+                        temp_sentence[seidx+1:osidx], 
+                        temp_sentence[osidx:oeidx+1].replace(obj_word,re_obj_word), 
+                        temp_sentence[oeidx+1:] ])
                 else :
-                    temp = ''.join([temp_sentence[0:ssidx] , temp_sentence[ssidx:seidx+1].replace(item['sub_word'],f"@*{item['sub_type']}*{item['sub_word']}@") , temp_sentence[seidx+1:osidx]  , temp_sentence[osidx:oeidx+1].replace(item['obj_word'],f"#∧{item['obj_type']}∧{item['obj_word']}#") , temp_sentence[oeidx+1:] ])
+                    temp = ''.join([
+                        temp_sentence[0:ssidx], 
+                        temp_sentence[ssidx:seidx+1].replace(sub_word,re_sub_word), 
+                        temp_sentence[seidx+1:osidx], 
+                        temp_sentence[osidx:oeidx+1].replace(obj_word,re_obj_word), 
+                        temp_sentence[oeidx+1:] ])
             else :
-                if item['obj_start_idx'] == 0 :
-                    temp = ''.join([temp_sentence[osidx:oeidx+1].replace(item['obj_word'],f"#∧{item['obj_type']}∧{item['obj_word']}#") , temp_sentence[oeidx+1:ssidx]  , temp_sentence[ssidx:seidx+1].replace(item['sub_word'],f"@*{item['sub_type']}*{item['sub_word']}@") , temp_sentence[seidx+1:] ])
+                if osidx == 0 :
+                    temp = ''.join([
+                        temp_sentence[osidx:oeidx+1].replace(obj_word,re_obj_word), 
+                        temp_sentence[oeidx+1:ssidx], 
+                        temp_sentence[ssidx:seidx+1].replace(sub_word,re_sub_word) , 
+                        temp_sentence[seidx+1:] ])
                 else :
-                    temp = ''.join([temp_sentence[0:osidx] , temp_sentence[osidx:oeidx+1].replace(item['obj_word'],f"#∧{item['obj_type']}∧{item['obj_word']}#") , temp_sentence[oeidx+1:ssidx]  , temp_sentence[ssidx:seidx+1].replace(item['sub_word'],f"@*{item['sub_type']}*{item['sub_word']}@") , temp_sentence[seidx+1:] ])
+                    temp = ''.join([
+                        temp_sentence[0:osidx] , 
+                        temp_sentence[osidx:oeidx+1].replace(obj_word,re_obj_word), 
+                        temp_sentence[oeidx+1:ssidx], 
+                        temp_sentence[ssidx:seidx+1].replace(sub_word,re_sub_word) , 
+                        temp_sentence[seidx+1:] ])
 
             re_sentence_list.append(temp)
         
