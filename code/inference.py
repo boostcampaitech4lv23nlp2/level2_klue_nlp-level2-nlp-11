@@ -58,25 +58,16 @@ def main(conf, device):
     ## load my model
     # TODO: model name 이 정확하게 명시된 dir 필요
 
-    # TODO: load dataset 통합
-    assert conf.data.data_loader in [
-        "BaseDataLoader",
-        "CustomDataLoader",
-    ], "data.data_loader is not ['BaseDataLoader' , 'CustomDataLoader']!.  please check config.yaml"
-
     # load dataset
     test_id, test_dataset, test_label = load_dataloader(
         conf.data.data_loader, conf.path.test_path, tokenizer
     ).get_test_dataset()
 
     # Model load
-    assert conf.model.model_type in [
-        "BaseModel",
-        "CustomModel",
-    ], "model.model_type  is not ['BaseModel' , 'CustomModel']!.  please check config.yaml"
 
     model = load_model(conf.model.model_type, conf.path.load_model, new_vocab_size)
     model = model.get_model()
+    
     print(model)
     print(model.config)
     model.parameters
