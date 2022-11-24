@@ -40,11 +40,6 @@ def train(conf, device) -> None:
 
     print(new_vocab_size)
 
-    assert conf.data.data_loader in [
-        "BaseDataLoader",
-        "CustomDataLoader",
-    ], "data.data_loader is not ['BaseDataLoader' , 'CustomDataLoader']!.  please check config.yaml"
-
     # load dataset
     train_dataset = load_dataloader(
         conf.data.data_loader, conf.path.train_path, tokenizer
@@ -55,11 +50,6 @@ def train(conf, device) -> None:
 
     print("train_dataset :", len(train_dataset))
     print("valid_dataset :", len(valid_dataset))
-
-    assert conf.model.model_type in [
-        "BaseModel",
-        "CustomModel",
-    ], "model.model_type  is not ['BaseModel' , 'CustomModel']!.  please check config.yaml"
 
     model = load_model(conf.model.model_type, conf.model.model_name, new_vocab_size)
     model = model.get_model()
@@ -99,10 +89,6 @@ def train(conf, device) -> None:
         metric_for_best_model="eval_micro f1 score",
     )
 
-    assert conf.model.trainer in [
-        "Base",
-        "Focalloss",
-    ], "model.trainer  is not ['Base' , 'Focalloss'] please check config.yaml"
 
     print(
         conf.data.data_loader, new_vocab_size, conf.model.model_type, conf.model.trainer
