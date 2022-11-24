@@ -5,11 +5,12 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn.functional as F
-from klue.dataloader import get_test_dataset
+from klue.dataloader import load_dataloader, set_tokenizer
+from klue.Model import load_model
 from klue.utils import num_to_label, set_seed
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from transformers import AutoModelForSequenceClassification, AutoTokenizer
+from transformers import AutoTokenizer
 
 
 # TODO : ADD TYPE HINT!
@@ -51,15 +52,35 @@ def main(conf, device):
     MODEL_NAME = f"{conf.model.model_name.replace('/','_')}_{conf.maintenance.version}"
     # load tokenizer
     tokenizer = AutoTokenizer.from_pretrained(conf.model.model_name)
+    tokenizer, new_vocab_size = set_tokenizer(tokenizer)
+    print(new_vocab_size)
 
     ## load my model
     # TODO: model name 이 정확하게 명시된 dir 필요
-    model = AutoModelForSequenceClassification.from_pretrained(conf.path.load_model)
-    model.parameters
-    model.to(device)
 
     # TODO: load dataset 통합
-    test_id, test_dataset, test_label = get_test_dataset(conf.path.test_path, tokenizer)
+    assert conf.data.data_loader in [
+        "BaseDataLoader",
+        "CustomDataLoader",
+    ], "data.data_loader is not ['BaseDataLoader' , 'CustomDataLoader']!.  please check config.yaml"
+
+    # load dataset
+    test_id, test_dataset, test_label = load_dataloader(
+        conf.data.data_loader, conf.path.test_path, tokenizer
+    ).get_test_dataset()
+
+    # Model load
+    assert conf.model.model_type in [
+        "BaseModel",
+        "CustomModel",
+    ], "model.model_type  is not ['BaseModel' , 'CustomModel']!.  please check config.yaml"
+
+    model = load_model(conf.model.model_type, conf.path.load_model, new_vocab_size)
+    model = model.get_model()
+    print(model)
+    print(model.config)
+    model.parameters
+    model.to(device)
 
     ## predict answer
     pred_answer, output_prob = inference(
@@ -78,6 +99,8 @@ def main(conf, device):
             "probs": output_prob,
         }
     )
+    # if not os.path.isdir(f"{conf.path.predict_dir}/{conf.model.model_name.replace('/','_')}") :
+    #     os.mkdir(f"{conf.path.predict_dir}/{conf.model.model_name.replace('/','_')}")
 
     output.to_csv(
         f"{conf.path.predict_dir}/{MODEL_NAME}.csv",
@@ -85,4 +108,5 @@ def main(conf, device):
         # "./prediction/submission.csv", index=False
     )  # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
     #### 필수!! ##############################################
+    print(f"saved path : {conf.path.predict_dir}/{MODEL_NAME}.csv")
     print("---- Finish! ----")
