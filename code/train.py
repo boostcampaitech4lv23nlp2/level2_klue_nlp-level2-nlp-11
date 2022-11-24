@@ -3,15 +3,25 @@ from pathlib import Path
 
 import torch
 import wandb
+import klue.dataloader
+import klue.Model
 from klue.dataloader import load_dataloader, set_tokenizer
 from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
 from klue.Model import load_model
 from klue.trainer import FocallossTrainer
 from klue.utils import set_MODEL_NAME, set_seed
-from transformers import (AutoConfig, AutoModelForSequenceClassification,
-                          AutoTokenizer, BertTokenizer, EarlyStoppingCallback,
-                          RobertaConfig, RobertaForSequenceClassification,
-                          RobertaTokenizer, Trainer, TrainingArguments)
+from transformers import (
+    AutoConfig,
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+    BertTokenizer,
+    EarlyStoppingCallback,
+    RobertaConfig,
+    RobertaForSequenceClassification,
+    RobertaTokenizer,
+    Trainer,
+    TrainingArguments,
+)
 
 
 def train(conf, device) -> None:
@@ -40,10 +50,9 @@ def train(conf, device) -> None:
 
     print(new_vocab_size)
 
-    assert conf.data.data_loader in [
-        "BaseDataLoader",
-        "CustomDataLoader",
-    ], "data.data_loader is not ['BaseDataLoader' , 'CustomDataLoader']!.  please check config.yaml"
+    assert hasattr(
+        klue.dataloader, conf.data.data_loader
+    ), f"{conf.data.data_loader} is not in klue/dataloader.py"
 
     # load dataset
     train_dataset = load_dataloader(
@@ -56,10 +65,9 @@ def train(conf, device) -> None:
     print("train_dataset :", len(train_dataset))
     print("valid_dataset :", len(valid_dataset))
 
-    assert conf.model.model_type in [
-        "BaseModel",
-        "CustomModel",
-    ], "model.model_type  is not ['BaseModel' , 'CustomModel']!.  please check config.yaml"
+    assert hasattr(
+        klue.Model, conf.model.model_type
+    ), f"{conf.model.model_type} is not in klue/Model.py"
 
     model = load_model(conf.model.model_type, conf.model.model_name, new_vocab_size)
     model = model.get_model()
