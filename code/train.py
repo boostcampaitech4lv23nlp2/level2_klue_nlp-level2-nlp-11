@@ -1,6 +1,8 @@
 import pickle as pickle
 from pathlib import Path
 
+import klue.dataloader
+import klue.Model
 import torch
 import wandb
 from klue.dataloader import load_dataloader, set_tokenizer
@@ -40,6 +42,12 @@ def train(conf, device) -> None:
 
     print(new_vocab_size)
 
+
+    assert hasattr(
+        klue.dataloader, conf.data.data_loader
+    ), f"{conf.data.data_loader} is not in klue/dataloader.py"
+
+
     # load dataset
     train_dataset = load_dataloader(
         conf.data.data_loader, conf.path.train_path, tokenizer
@@ -50,6 +58,10 @@ def train(conf, device) -> None:
 
     print("train_dataset :", len(train_dataset))
     print("valid_dataset :", len(valid_dataset))
+
+    assert hasattr(
+        klue.Model, conf.model.model_type
+    ), f"{conf.model.model_type} is not in klue/Model.py"
 
     model = load_model(conf.model.model_type, conf.model.model_name, new_vocab_size)
     model = model.get_model()
