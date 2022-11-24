@@ -42,9 +42,11 @@ def train(conf, device) -> None:
 
     print(new_vocab_size)
 
+
     assert hasattr(
         klue.dataloader, conf.data.data_loader
     ), f"{conf.data.data_loader} is not in klue/dataloader.py"
+
 
     # load dataset
     train_dataset = load_dataloader(
@@ -99,10 +101,6 @@ def train(conf, device) -> None:
         metric_for_best_model="eval_micro f1 score",
     )
 
-    assert conf.model.trainer in [
-        "Base",
-        "Focalloss",
-    ], "model.trainer  is not ['Base' , 'Focalloss'] please check config.yaml"
 
     print(
         conf.data.data_loader, new_vocab_size, conf.model.model_type, conf.model.trainer

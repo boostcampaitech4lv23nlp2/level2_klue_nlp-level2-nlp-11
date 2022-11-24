@@ -133,7 +133,7 @@ class BaseDataLoader:
         return dataset_id, dataset, dataset_label
 
 
-class CustomDataLoader:
+class CustomDataLoader(BaseDataLoader):
     """Custom DataLoader 입니다.
 
     Args:
@@ -147,9 +147,8 @@ class CustomDataLoader:
         4)get_test_dataset : test 데이터셋을 토큰화 셋으로 변환한 뒤 RE_Dataset 형태로 반환 합니다
     """
 
-    def __init__(self, data_path: pathlib.Path, tokenizer: AutoTokenizer):
-        self.data_path = data_path
-        self.tokenizer = tokenizer
+    def __init__(self,  data_path: pathlib.Path, tokenizer: AutoTokenizer):
+        super().__init__(data_path, tokenizer)
 
     def preprocessing_dataset(self, dataset: pd.DataFrame) -> pd.DataFrame:
         """처음 불러온 csv 파일을 원하는 형태의 DataFrame으로 변경 시켜줍니다."""
@@ -194,48 +193,7 @@ class CustomDataLoader:
         )
         return tokenized_sentences
 
-    def get_dataset(self) -> RE_Dataset:
-        """데이터셋을 Trainer에 넣을 수 있도록 처리하여 리턴합니다.
-
-        Args:
-            data_path (str): 가져올 데이터의 주소입니다.
-            tokenizer (AutoTokenizer): 데이터를 토큰화할 토크나이저입니다.
-
-        Returns:
-            pd.DataFrame: _description_
-        """
-        pd_dataset = pd.read_csv(self.data_path)
-        dataset = self.preprocessing_dataset(pd_dataset)
-
-        dataset_label = utils.label_to_num(dataset["label"].values)
-
-        # tokenizing dataset
-        dataset_tokens = self.tokenized_dataset(dataset, self.tokenizer)
-        # make dataset for pytorch.
-        dataset = RE_Dataset(dataset_tokens, dataset_label)
-        return dataset
-
-    def get_test_dataset(self) -> RE_Dataset:
-        """데이터셋을 Trainer에 넣을 수 있도록 처리하여 리턴합니다.
-
-        Args:
-            data_path (str): 가져올 데이터의 주소입니다.
-            tokenizer (AutoTokenizer): 데이터를 토큰화할 토크나이저입니다.
-
-        Returns:
-            pd.DataFrame: _description_
-        """
-        pd_dataset = pd.read_csv(self.data_path)
-        dataset = self.preprocessing_dataset(pd_dataset)
-
-        dataset_label = list(map(int, dataset["label"].values))
-        dataset_id = dataset["id"]
-        # tokenizing dataset
-        dataset_tokens = self.tokenized_dataset(dataset, self.tokenizer)
-        # make dataset for pytorch.
-        dataset = RE_Dataset(dataset_tokens, dataset_label)
-        return dataset_id, dataset, dataset_label
-
+#--------------------------------------------------------------------------------------------------
 
 def load_dataloader(
     dataloder_type: str, data_path: pathlib.Path, tokenizer: AutoTokenizer
