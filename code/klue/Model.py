@@ -73,7 +73,7 @@ class CustomModel:
 
 
 def load_model(model_type: str, model_name: str, new_vocab_size: int):
-    """ model_type 해당되는 클래스 모델을 반환합니다
+    """model_type 해당되는 클래스 모델을 반환합니다
 
     Args:
         model_type (str): 가져올 모델 클래스
