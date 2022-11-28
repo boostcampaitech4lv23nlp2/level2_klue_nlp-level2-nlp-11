@@ -109,3 +109,8 @@ code/logs
 code/prediction
 code/results
 *.pkl
+*.json
+*.csv
+*.txt
+*.bin
+*.pth
