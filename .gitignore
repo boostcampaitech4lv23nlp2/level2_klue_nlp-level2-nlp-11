@@ -112,7 +112,6 @@ code/best_model
 code/logs
 code/prediction
 code/results
-*.pkl
 *.json
 *.csv
 *.txt
