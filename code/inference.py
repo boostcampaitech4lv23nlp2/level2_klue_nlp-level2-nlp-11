@@ -67,7 +67,7 @@ def main(conf, device):
 
     model = load_model(conf.model.model_type, conf.path.load_model, new_vocab_size)
     model = model.get_model()
-    
+
     print(model)
     print(model.config)
     model.parameters
