@@ -2,7 +2,7 @@ from klue.loss import FocalLoss
 from transformers import Trainer
 
 
-# TODO : trainer와 관련된 클래스 또는 함수를 "code/klue/trainer.py"로 옮겨주세요!
+# TODO: ADD TYPE HINT AND DOCSTRING
 class FocallossTrainer(Trainer):
     # gamma, alpha를 직접 설정할 수 있도록 코드를 개선하였습니다.
     # 다만 alpha는 int값을 넣을시 gather와 관련하여 오류가 발생힙니다.

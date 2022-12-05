@@ -1,6 +1,4 @@
 import argparse
-import sys
-from typing import Tuple
 
 import inference
 import torch

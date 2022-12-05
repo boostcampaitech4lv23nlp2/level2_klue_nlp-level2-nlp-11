@@ -1,3 +1,4 @@
+# TODO: ADD TYPE HINT AND DOCSTRING.
 def verbalize_label(label, subj, obj):
     LABEL_TEMPLATES = {
         "no_relation": [f"{subj}와(과) {obj}은(는) 관련이 없다."],
@@ -68,6 +69,7 @@ def verbalize_label(label, subj, obj):
     return LABEL_TEMPLATES[label][0]
 
 
+# TODO: ADD TYPE HINT AND DOCSTRING
 def change_type(type):
     TYPE_TEMPLATES = {
         "PER": "사람",

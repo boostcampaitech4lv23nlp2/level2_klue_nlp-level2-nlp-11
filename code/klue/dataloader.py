@@ -1,4 +1,3 @@
-import os
 import pathlib
 import pickle as pickle
 from functools import partial
@@ -6,7 +5,7 @@ from functools import partial
 import numpy as np
 import pandas as pd
 import torch
-from klue.sure import change_type, verbalize_label
+from klue.sure import change_type
 from transformers import AutoTokenizer
 
 from . import utils

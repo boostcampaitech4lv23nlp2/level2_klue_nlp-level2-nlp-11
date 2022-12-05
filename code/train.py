@@ -6,15 +6,13 @@ import klue.Model
 import torch
 import wandb
 from klue.dataloader import load_dataloader, set_tokenizer
-from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
+from klue.metric import compute_metrics
 from klue.Model import load_model
 from klue.trainer import FocallossTrainer
-from klue.utils import set_MODEL_NAME, set_seed
+from klue.utils import set_MODEL_NAME
 from omegaconf import OmegaConf
-from transformers import (AutoConfig, AutoModelForSequenceClassification,
-                          AutoTokenizer, BertTokenizer, EarlyStoppingCallback,
-                          RobertaConfig, RobertaForSequenceClassification,
-                          RobertaTokenizer, Trainer, TrainingArguments)
+from transformers import (AutoTokenizer, EarlyStoppingCallback, Trainer,
+                          TrainingArguments)
 
 
 def train(conf, device) -> None:
@@ -40,8 +38,6 @@ def train(conf, device) -> None:
     # set_tokenizerr
     tokenizer = AutoTokenizer.from_pretrained(conf.model.model_name)
     tokenizer, new_vocab_size = set_tokenizer(tokenizer)
-
-    print(new_vocab_size)
 
     assert hasattr(
         klue.dataloader, conf.data.data_loader
@@ -70,8 +66,9 @@ def train(conf, device) -> None:
     model.parameters
 
     model.to(device)
-    # 사용한 option 외에도 다양한 option들이 있습니다.
-    # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
+    # TODO : training_args argument abstraction
+    # training_Args의 대부분은 고정되어 변하지 않으므로
+    # 이를 따로 파일을 만들어서 관리하거나 하면 좋을 것 같습니다.
     training_args = TrainingArguments(
         # set seed
         seed=conf.utils.seed,
@@ -103,7 +100,7 @@ def train(conf, device) -> None:
     print(
         conf.data.data_loader, new_vocab_size, conf.model.model_type, conf.model.trainer
     )
-
+    # TODO: Improve feature that load trainers.
     if conf.model.trainer == "Base":
         print("base_trainer")
         trainer = Trainer(
@@ -136,6 +133,7 @@ def train(conf, device) -> None:
     print(f"save model path : {MODEL_DIR}")
 
 
+# TODO : add k-fold training
 def k_train() -> None:
     """
     구현예정

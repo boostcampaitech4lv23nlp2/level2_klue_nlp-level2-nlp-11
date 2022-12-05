@@ -1,4 +1,3 @@
-import os
 import pickle as pickle
 
 import numpy as np
@@ -7,7 +6,7 @@ import torch
 import torch.nn.functional as F
 from klue.dataloader import load_dataloader, set_tokenizer
 from klue.Model import load_model
-from klue.utils import num_to_label, set_seed
+from klue.utils import num_to_label
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from transformers import AutoTokenizer
