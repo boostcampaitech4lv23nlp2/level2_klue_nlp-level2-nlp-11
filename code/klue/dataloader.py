@@ -149,7 +149,7 @@ class CustomDataLoader(BaseDataLoader):
         4)get_test_dataset : test 데이터셋을 토큰화 셋으로 변환한 뒤 RE_Dataset 형태로 반환 합니다
     """
 
-    def __init__(self,  data_path: pathlib.Path, tokenizer: AutoTokenizer):
+    def __init__(self, data_path: pathlib.Path, tokenizer: AutoTokenizer):
         super().__init__(data_path, tokenizer)
 
     def preprocessing_dataset(self, dataset: pd.DataFrame) -> pd.DataFrame:
@@ -303,7 +303,8 @@ class CustomDataLoader(BaseDataLoader):
         )
         return tokenized_sentences
 
-#--------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------
 

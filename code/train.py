@@ -10,6 +10,7 @@ from klue.metric import compute_metrics, klue_re_auprc, klue_re_micro_f1
 from klue.Model import load_model
 from klue.trainer import FocallossTrainer
 from klue.utils import set_MODEL_NAME, set_seed
+from omegaconf import OmegaConf
 from transformers import (AutoConfig, AutoModelForSequenceClassification,
                           AutoTokenizer, BertTokenizer, EarlyStoppingCallback,
                           RobertaConfig, RobertaForSequenceClassification,
@@ -42,11 +43,9 @@ def train(conf, device) -> None:
 
     print(new_vocab_size)
 
-
     assert hasattr(
         klue.dataloader, conf.data.data_loader
     ), f"{conf.data.data_loader} is not in klue/dataloader.py"
-
 
     # load dataset
     train_dataset = load_dataloader(
@@ -101,7 +100,6 @@ def train(conf, device) -> None:
         metric_for_best_model="eval_micro f1 score",
     )
 
-
     print(
         conf.data.data_loader, new_vocab_size, conf.model.model_type, conf.model.trainer
     )
@@ -133,6 +131,8 @@ def train(conf, device) -> None:
     # train model
     trainer.train()
     model.save_pretrained(MODEL_DIR)
+    # saving wandb files
+    OmegaConf.save(config=conf, f=Path(wandb.run.dir) / Path("train_config.yaml"))
     print(f"save model path : {MODEL_DIR}")
 
 
