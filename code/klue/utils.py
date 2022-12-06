@@ -61,6 +61,7 @@ def set_MODEL_NAME(model_name: str, save_dir_path: str) -> Path:
     # version check
     version = 1
     MODEL_NAME = Path(save_dir_path) / Path(model_name) / str(version)
+    # TODO: 버전을 YAML의 MAIN.VERSION과 맞추고, 폴더가 존재하면 경고 발생하도록(assert)
     while MODEL_NAME.exists():
         version += 1
         MODEL_NAME = Path(save_dir_path) / Path(model_name) / str(version)

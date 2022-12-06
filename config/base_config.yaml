@@ -1,53 +1,54 @@
 path:
-  #data path
-  train_path: ../dataset/train/new_train10.csv
-  valid_path: ../dataset/train/new_valid10.csv
-  test_path: ../dataset/test/test_data.csv
+    #data path
+    train_path: ../dataset/train/new_train10.csv
+    valid_path: ../dataset/train/new_valid10.csv
+    test_path: ../dataset/test/test_data.csv
 
-  #save path
-  model_dir: ../dataset/best_model # 모델 저장 경로
-  save_dir: ../dataset/results # train 스텝별 저장경로
-  logs_dir: ../dataset/logs # 로그 저장 경로
+    #save path
+    model_dir: ../dataset/best_model # 모델 저장 경로
+    save_dir: ../dataset/results # train 스텝별 저장경로
+    logs_dir: ../dataset/logs # 로그 저장 경로
 
-  # TODO: wandb needs absolute path or pathlib.Path
-  wandb_dir: ../dataset
-  predict_dir: ../dataset/prediction
+    # TODO: wandb needs absolute path or pathlib.Path
+    wandb_dir: ../dataset
+    predict_dir: ../dataset/prediction
 
-  #infernce path
-  load_model: ../dataset/best_model/klue_roberta-small/1 # inference 할때 불러올 모델 경로(dir)
+    #infernce path
+    #TODO: load_model 경로 불러오기.
+    load_model: ../dataset/best_model/ # inference 할때 불러올 모델 경로(dir)
 
 data:
-  data_loader: BaseDataLoader # data_loader 1) BaseDataLoader , 2) CustomDataLoader
-  shuffle: True
+    data_loader: BaseDataLoader # data_loader 1) BaseDataLoader , 2) CustomDataLoader
+    shuffle: True
 
 model:
-  model_name: klue/roberta-small
-  model_type: BaseModel #model_type 1) BaseModel, 2) CustomModel
-  trainer: Base #trainer_type) Base,  Focalloss
+    model_name: klue/roberta-small
+    model_type: BaseModel #model_type 1) BaseModel, 2) CustomModel
+    trainer: Base #trainer_type) Base,  Focalloss
 
 train:
-  num_train_epochs: 2
-  per_device_train_batch_size: 32
-  per_device_eval_batch_size: 32
-  learning_rate: 1e-5
+    num_train_epochs: 2
+    per_device_train_batch_size: 32
+    per_device_eval_batch_size: 32
+    learning_rate: 1e-5
 
 focalloss:
-  gamma: 2
+    gamma: 2
 
 maintenance:
-  eval_strategy: epoch
-  version: "1"
+    eval_strategy: epoch
+    version: "1"
 
 utils:
-  seed: 42
-  #monitor: val_loss # Early Stop monitor
-  #patience: 25 # patience 범위
-  #top_k: 3 # best save
+    seed: 42
+    #monitor: val_loss # Early Stop monitor
+    #patience: 25 # patience 범위
+    #top_k: 3 # best save
 
 k_fold: # fold
-  use_k_fold: False
-  num_split: 3 # fold split ratio 5 => train(4) : val(1)
+    use_k_fold: False
+    num_split: 3 # fold split ratio 5 => train(4) : val(1)
 
 wandb:
-  exp_name: test_exp_name #실험의 이름. 이 변수의 값으로 프로젝트가 만들어집니다.
-  annotation: test_small_base #이 실험에 대해 추가로 설명할 특징. display_name과 관련있습니다.ex) focal-gamma=2
+    exp_name: test_exp_name #실험의 이름. 이 변수의 값으로 프로젝트가 만들어집니다.
+    annotation: test_small_base #이 실험에 대해 추가로 설명할 특징. display_name과 관련있습니다.ex) focal-gamma=2
