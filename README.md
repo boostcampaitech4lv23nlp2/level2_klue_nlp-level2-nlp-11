@@ -6,7 +6,6 @@
 - GPU : v100 * 5
 - 협업 툴 : Github, Notion, Wandb
 - 개발 환경 : Ubuntu 18.04
-- 라이브러리 : torch 1.12.0, torchmetrics 0.10.0, wandb 0.13.4, sentence-transformers 2.2.2
 
 ### Command Line Interface
 ```
