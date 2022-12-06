@@ -3,7 +3,7 @@ import argparse
 import inference
 import torch
 import train
-from klue.utils import set_seed
+from klue.utils import set_conf, set_seed
 from omegaconf import OmegaConf
 
 if __name__ == "__main__":
@@ -24,14 +24,12 @@ if __name__ == "__main__":
     conf.merge_with_dotlist(sweep_args)
 
     set_seed(conf.utils.seed)
+    set_conf(conf)
+
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     if args.mode == "train" or args.mode == "t":
-        # conf.k_fold 변수 확인
-        if conf.k_fold.use_k_fold:
-            train.k_train(conf, device)
-        else:
-            train.train(conf, device)
+        train.train(conf, device)
 
     elif args.mode == "inference" or args.mode == "i":
         inference.main(conf, device)

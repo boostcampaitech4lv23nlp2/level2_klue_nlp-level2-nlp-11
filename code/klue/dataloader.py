@@ -47,6 +47,7 @@ class BaseDataLoader:
         self.data_path = data_path
         self.tokenizer = tokenizer
 
+    # TODO 아래 코드를 CustomDataLoader 의 preprocessing_dataset 함수로 바꾸는게 맞지않나?!
     def preprocessing_dataset(self, dataset: pd.DataFrame) -> pd.DataFrame:
         """처음 불러온 csv 파일을 원하는 형태의 DataFrame으로 변경 시켜줍니다."""
         subject_entity = []
@@ -303,6 +304,67 @@ class CustomDataLoader(BaseDataLoader):
         return tokenized_sentences
 
 
+class KfoldDataLoader(BaseDataLoader):
+    """BaseLine DataLoader 입니다.
+
+    Args:
+        load_data :  (str): 가져올 데이터의 주소입니다.
+        tokenizer (AutoTokenizer): 데이터를 토큰화할 토크나이저입니다.
+
+    func :
+        1)preprocessing_dataset(pd.DataFrame) : 데이터 전처리를 합니다 return pd.DataFrame
+        2)tokenized_dataset(pd.DataFrame, tokenizer: AutoTokenizer) : 전처리된 데이터셋을 tokenized_dataset으로 반환 합니다
+        3)get_dataset : train, valid 데이터셋을 토큰화 셋으로 변환한 뒤 RE_Dataset 형태로 반환 합니다
+        4)get_test_dataset :  test 데이터셋을 토큰화 셋으로 변환한 뒤 RE_Dataset 형태로 반환 합니다
+    """
+
+    def __init__(
+        self,
+        data_path: pathlib.Path,
+        data_frame: pd.DataFrame,
+        tokenizer: AutoTokenizer,
+    ):
+        super().__init__(data_path, tokenizer)
+        self.dataframe = data_frame
+
+    def get_dataset(self) -> RE_Dataset:
+        """데이터셋을 Trainer에 넣을 수 있도록 처리하여 리턴합니다.
+
+        Args:
+
+        Returns:
+            pd.DataFrame: _description_
+        """
+        dataset = self.preprocessing_dataset(self.dataframe)
+
+        dataset_label = utils.label_to_num(dataset["label"].values)
+
+        # tokenizing dataset
+        dataset_tokens = self.tokenized_dataset(dataset, self.tokenizer)
+        # make dataset for pytorch.
+        dataset = RE_Dataset(dataset_tokens, dataset_label)
+        return dataset
+
+    def get_test_dataset(self) -> RE_Dataset:
+        """데이터셋을 Trainer에 넣을 수 있도록 처리하여 리턴합니다.
+
+        Args:
+
+        Returns:
+            pd.DataFrame: _description_
+        """
+        dataset = self.preprocessing_dataset(self.dataframe)
+
+        dataset_label = list(map(int, dataset["label"].values))
+        dataset_id = dataset["id"]
+
+        # tokenizing dataset
+        dataset_tokens = self.tokenized_dataset(dataset, self.tokenizer)
+        # make dataset for pytorch.
+        dataset = RE_Dataset(dataset_tokens, dataset_label)
+        return dataset_id, dataset, dataset_label
+
+
 # --------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------
@@ -327,6 +389,22 @@ def load_dataloader(
         "CustomDataLoader_hs": CustomDataLoader_hs(data_path, tokenizer),
     }
     return dataloader_config[dataloder_type]
+
+
+def load_dataloader_kfold(
+    data_path: pathlib.Path, data_frame: pd.DataFrame, tokenizer: AutoTokenizer
+):
+    """_summary_
+
+    Args:
+        dataloder_type (str) : 가져올 dataloder 클래스 입니다 config 확인
+        load_data (pd.DataFrame): 가져올 데이터 프레임 입니다.
+        tokenizer (AutoTokenizer): 데이터를 토큰화할 토크나이저입니다.
+
+    Returns:
+        dataloader class : dataloader_type에 맞는 class 반환 합니다
+    """
+    return KfoldDataLoader(data_path, data_frame, tokenizer)
 
 
 def set_tokenizer(tokenizer: AutoTokenizer):

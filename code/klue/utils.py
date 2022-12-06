@@ -6,6 +6,8 @@ from pathlib import Path
 import numpy as np
 import torch
 
+conf = None
+
 
 def set_seed(random_seed: int) -> None:
     print(f"Set global seed {random_seed}")
@@ -63,6 +65,27 @@ def set_MODEL_NAME(model_name: str, save_dir_path: str) -> Path:
         version += 1
         MODEL_NAME = Path(save_dir_path) / Path(model_name) / str(version)
     return Path(model_name) / str(version)
+
+
+def set_conf(configure):
+    global conf
+    conf = configure
+
+
+def get_DIR(name):
+
+    model_name = set_MODEL_NAME(conf.model.model_name, conf.path.save_dir)
+
+    DIRS = {
+        "DISPLAY_NAME": f"lr-{conf.train.learning_rate:5f}_{conf.wandb.annotation}",
+        "MODEL_NAME": model_name,
+        "SAVE_DIR": Path(conf.path.save_dir) / model_name,
+        "LOG_DIR": Path(conf.path.logs_dir) / model_name,
+        "MODEL_DIR": Path(conf.path.model_dir) / model_name,
+        "WANDB_DIR": Path(conf.path.wandb_dir),
+    }
+
+    return DIRS[name]
 
 
 if __name__ == "__main__":
